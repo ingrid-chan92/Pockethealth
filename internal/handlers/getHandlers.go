@@ -7,7 +7,7 @@ import (
 )
 
 // Given a file id and a header attribute tag, search and return the associated header attribute
-func queryHeaderAttribute(w http.ResponseWriter, r *http.Request) {
+func QueryHeaderAttribute(w http.ResponseWriter, r *http.Request) {
 	fileId := r.PathValue("id")
 	headerTag := r.URL.Query().Get("tag")
 
@@ -23,7 +23,7 @@ func queryHeaderAttribute(w http.ResponseWriter, r *http.Request) {
 }
 
 // Given a file id, return the file rendered as a png
-func getImage(w http.ResponseWriter, r *http.Request) {
+func GetImage(w http.ResponseWriter, r *http.Request) {
 	fileId := r.PathValue("id")
 	io.WriteString(w, fmt.Sprintf("Get Image id: %s\n", fileId))
 }

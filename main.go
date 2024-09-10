@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/ingrid-chan92/Pockethealth/internal/handlers"
 )
 
 // Helper function for validate method for each handler
@@ -18,13 +20,13 @@ func validateAndRunHandler(method string, handler func(http.ResponseWriter, *htt
 
 func main() {
 	http.HandleFunc("/{id}/headerAttribute", func(w http.ResponseWriter, r *http.Request) {
-		validateAndRunHandler(http.MethodGet, handlers.queryHeaderAttribute, w, r)
+		validateAndRunHandler(http.MethodGet, handlers.QueryHeaderAttribute, w, r)
 	})
 	http.HandleFunc("/{id}", func(w http.ResponseWriter, r *http.Request) {
-		validateAndRunHandler(http.MethodGet, handlers.getImage, w, r)
+		validateAndRunHandler(http.MethodGet, handlers.GetImage, w, r)
 	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		validateAndRunHandler(http.MethodPost, handlers.uploadFile, w, r)
+		validateAndRunHandler(http.MethodPost, handlers.UploadFile, w, r)
 	})
 
 	err := http.ListenAndServe(":3333", nil)
