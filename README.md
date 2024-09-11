@@ -147,6 +147,7 @@ Contains test DICOM files for manual testing
   * User Permissions E.g. Tie Uploads to users. Do not allow users to access DICOM files they do not own
   * Authorization on endpoints. E.g. Debug API should be internal users only
 * Maintenance
+  * Rename service to "Dicom Parser" or just "Dicom". Name is currently just for easy indicator of which coding challenge it is
   * Replace Sqlite Database
   * Proper Logging for errors
   * Better error messages for user on 4XXs
