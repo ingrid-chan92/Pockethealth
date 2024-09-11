@@ -130,6 +130,7 @@ Contains test DICOM files for manual testing
 - [ ] GET with valid file ID and defined tag -> Tag Name and Element returned
 - [ ] GET with valid file ID and invalid format tag -> Bad Request
 - [ ] GET with valid file ID and non-existent tag -> Bad Request
+- [ ] GET with valid file ID and defined tag, but tag does not existing in DICOM file -> Not Found
 - [ ] GET with invalid file ID -> Not Found
 - [ ] POST with valid file ID and defined tag -> Method not Supported
 
