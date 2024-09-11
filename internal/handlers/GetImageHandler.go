@@ -43,13 +43,7 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 
 	// Convert pixel data into PNG
 	pixelDataInfo := dicom.MustGetPixelDataInfo(pixelDataElement.Value)
-	/*
-		images := []image.Image{}
-		for _, fr := range pixelDataInfo.Frames {
-			img, _ := fr.GetImage()
-			images = append(images, img)
-		}
-	*/
+
 	image, _ := pixelDataInfo.Frames[0].GetImage()
 	var buffer bytes.Buffer
 	err = png.Encode(&buffer, image)
