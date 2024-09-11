@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"bytes"
 	"fmt"
-	"io"
+	"image/png"
 	"net/http"
 
 	"github.com/ingrid-chan92/Pockethealth/persistence"
+	"github.com/suyashkumar/dicom"
+	"github.com/suyashkumar/dicom/pkg/tag"
 )
 
 // Given a file id, return the file rendered as a png
@@ -15,7 +18,7 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 	// error handling: File Id must exist
 	metadata, err := db.GetMetadata(fileId)
 	if err != nil {
-		fmt.Printf("Error retrieving metadata for id %s: %s", fileId, err)
+		fmt.Printf("Error retrieving metadata for id %s: %s\n", fileId, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -24,5 +27,37 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	io.WriteString(w, fmt.Sprintf("Get Image id: %s\n", fileId))
+	// Retrieve Dicom file, and get the Pixel Data
+	data, err := dicom.ParseFile(metadata.FileLocation, nil)
+	if err != nil {
+		fmt.Printf("Error parsing dicom file for id %s: %v\n", fileId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	pixelDataElement, err := data.FindElementByTag(tag.PixelData)
+	if err != nil {
+		fmt.Printf("Could not find Pixel Data Tag in file %s: %s", fileId, err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Convert pixel data into PNG
+	pixelDataInfo := dicom.MustGetPixelDataInfo(pixelDataElement.Value)
+	/*
+		images := []image.Image{}
+		for _, fr := range pixelDataInfo.Frames {
+			img, _ := fr.GetImage()
+			images = append(images, img)
+		}
+	*/
+	image, _ := pixelDataInfo.Frames[0].GetImage()
+	var buffer bytes.Buffer
+	err = png.Encode(&buffer, image)
+	if err != nil {
+		fmt.Printf("Error encoding image as PNG for file %s: %s\n", fileId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(buffer.Bytes())
 }

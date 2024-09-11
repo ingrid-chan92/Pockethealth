@@ -36,6 +36,8 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	// Move cursor back to start of file
+	source.Seek(0, io.SeekStart)
 
 	// Create destination file
 	filepath := fmt.Sprintf("%s/%s", StoragePath, id)
@@ -54,8 +56,6 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	// At this point, everything should have succeeded
 
 	// Save metadata for the file
 	err = db.CreateMetadata(id, filepath)

@@ -26,11 +26,6 @@ func GetMetadata(db persistence.Database, w http.ResponseWriter, r *http.Request
 	}
 
 	// convert to json
-	response, err := json.Marshal(metadata)
-	if err != nil {
-		fmt.Printf("Error marshalling metadata into json: %s\n", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	response, _ := json.Marshal(metadata)
 	w.Write(response)
 }
