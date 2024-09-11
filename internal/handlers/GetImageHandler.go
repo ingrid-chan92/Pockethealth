@@ -43,11 +43,9 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 
 	// Convert pixel data into PNG
 	pixelDataInfo := dicom.MustGetPixelDataInfo(pixelDataElement.Value)
-
 	image, _ := pixelDataInfo.Frames[0].GetImage()
 	var buffer bytes.Buffer
-	err = png.Encode(&buffer, image)
-	if err != nil {
+	if png.Encode(&buffer, image) != nil {
 		fmt.Printf("Error encoding image as PNG for file %s: %s\n", fileId, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

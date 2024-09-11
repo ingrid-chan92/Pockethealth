@@ -90,8 +90,6 @@ HTTP/1.1 200 OK
 
 # Components
 
-High level breakdown of the repository
-
 **internal/handlers**
 
 Contains business logic for handling the incoming requests. Files are divided per handler
@@ -102,22 +100,49 @@ Contains models shared between handlers
 
 **internal/router**
 
-Contains the bootstrapping for setting up the endpoints. Primarily used for passing the DB between handlers
+Contains the bootstrapping for handlers. Primarily used for passing the DB between handlers
 
 **persistence**
 
-Contains the Sqlite database and the filesystem for storing the DICOM files. 
+Contains the Sqlite Metadata database and the filesystem for storing the DICOM files. 
 
 **test**
 
 Contains test DICOM files for manual testing
 
-# Next Steps
+# Manual Test Plan
+
+**Upload Dicom File**
+
+- [ ] POST with valid DICOM file -> Dicom File uploaded and assigned file ID. Metadata stored in database. File ID returned
+- [ ] POST with duplicate DICOM file -> No Duplicate protection. Dicom file uploaded and assigned file ID. Metadata stored in database. File ID returned
+- [ ] POST with non DICOM file -> Bad Request. No file or metadata stored
+- [ ] GET with valid DICOM file -> Method not Supported
+
+**Get Dicom File as PNG**
+
+- [ ] GET with valid file ID -> PNG of Dicom file returned
+- [ ] GET with invalid file ID -> Not Found
+- [ ] POST with valid file ID -> Method not Supported
+
+**Get Header Attributes**
+
+- [ ] GET with valid file ID and defined tag -> Tag Name and Element returned
+- [ ] GET with valid file ID and invalid format tag -> Bad Request
+- [ ] GET with valid file ID and non-existent tag -> Bad Request
+- [ ] GET with invalid file ID -> Not Found
+- [ ] POST with valid file ID and defined tag -> Method not Supported
+
+
+# TODO
 * Features
-  * Support more image types, toggle-able via query params in the /image endpoint
+  * Support more image types, toggle-able via query params in the `/image` endpoint
   * Prevent users from uploading duplicate files by storing Md5 Hashes in Metadata
   * Caching DICOM Files/Caching Images
-  * Bulk Upload/Bulk Tag lookup
+  * Bulk Upload
+  * Bulk Tag Lookup E.g. Allow multiple tag query params
+  * Async Pipeline (e.g. Kafka, RabbitMQ) to process header attributes and store in DB for quick lookup
+    * Fallback on parsing Dicom file directly if the attribute is not yet stored
   * User Permissions E.g. Tie Uploads to users. Do not allow users to access DICOM files they do not own
   * Authorization on endpoints. E.g. Debug API should be internal users only
 * Maintenance

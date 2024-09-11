@@ -57,6 +57,7 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	// At this point, all files have been processed
 	// Save metadata for the file
 	err = db.CreateMetadata(id, filepath)
 	if err != nil {
