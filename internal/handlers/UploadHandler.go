@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ingrid-chan92/Pockethealth/persistence"
+	"github.com/suyashkumar/dicom"
 )
 
 // Store all Dicom files here
@@ -20,7 +21,7 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 
 	// Extract source file from the request
 	r.ParseMultipartForm(32 << 20)
-	source, _, err := r.FormFile("dicom")
+	source, header, err := r.FormFile("dicom")
 	if err != nil {
 		fmt.Printf("Error retrieving file: %s\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -28,7 +29,13 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 	}
 	defer source.Close()
 
-	// Validate Dicom File here
+	// Validate the file is DICOM format by attempting to parse it
+	_, err = dicom.Parse(source, header.Size, nil)
+	if err != nil {
+		fmt.Printf("Invalid DICOM file received: %s\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	// Create destination file
 	filepath := fmt.Sprintf("%s/%s", StoragePath, id)
@@ -40,13 +47,15 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 	}
 	defer destination.Close()
 
-	// At this point, source and destination exist. Copy Source into Destination
+	// Copy Source into Destination
 	_, err = io.Copy(destination, source)
 	if err != nil {
 		fmt.Printf("Error copying source to destination: %s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// At this point, everything should have succeeded
 
 	// Save metadata for the file
 	err = db.CreateMetadata(id, filepath)

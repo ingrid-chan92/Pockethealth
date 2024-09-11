@@ -16,7 +16,7 @@ func GetMetadata(db persistence.Database, w http.ResponseWriter, r *http.Request
 	// error handling: File Id must exist
 	metadata, err := db.GetMetadata(fileId)
 	if err != nil {
-		fmt.Printf("Error retrieving metadata for id %s: %s", fileId, err)
+		fmt.Printf("Error retrieving metadata for id %s: %s\n", fileId, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -28,7 +28,7 @@ func GetMetadata(db persistence.Database, w http.ResponseWriter, r *http.Request
 	// convert to json
 	response, err := json.Marshal(metadata)
 	if err != nil {
-		fmt.Printf("Error marshalling metadata into json: %s", err)
+		fmt.Printf("Error marshalling metadata into json: %s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
