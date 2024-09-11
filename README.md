@@ -148,6 +148,7 @@ Contains test DICOM files for manual testing
 * Maintenance
   * Replace Sqlite Database
   * Proper Logging for errors
+  * Better error messages for user on 4XXs
   * Testing
     * Integration Tests
     * E2E Tests

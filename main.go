@@ -12,6 +12,7 @@ import (
 
 func main() {
 	db := persistence.New()
+	defer db.Disconnect()
 	router := router.New(db)
 
 	http.HandleFunc("/{id}/headerAttribute", router.QueryHeaderAttribute)
@@ -21,11 +22,9 @@ func main() {
 
 	err := http.ListenAndServe(":3333", nil)
 	if errors.Is(err, http.ErrServerClosed) {
-		fmt.Printf("closed\n")
-		db.Disconnect()
+		fmt.Printf("Server closed successfully\n")
 	} else if err != nil {
 		fmt.Printf("HTTP Server Error: %s\n", err)
-		db.Disconnect()
 		os.Exit(1)
 	}
 }

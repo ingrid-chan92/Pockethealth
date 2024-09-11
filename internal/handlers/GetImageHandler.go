@@ -28,7 +28,7 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve Dicom file, and get the Pixel Data
-	data, err := dicom.ParseFile(metadata.FileLocation, nil)
+	data, err := dicom.ParseFile(metadata.FilePath, nil)
 	if err != nil {
 		fmt.Printf("Error parsing dicom file for id %s: %v\n", fileId, err)
 		w.WriteHeader(http.StatusInternalServerError)

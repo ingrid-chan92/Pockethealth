@@ -46,7 +46,7 @@ func (d *dbImpl) GetMetadata(id string) (*model.Metadata, error) {
 	var result model.Metadata
 
 	row := d.db.QueryRow("SELECT id, filepath, userId FROM metadata WHERE id = $1", id)
-	err := row.Scan(&result.Id, &result.FileLocation, &result.UserId)
+	err := row.Scan(&result.Id, &result.FilePath, &result.UserId)
 	if err != nil {
 		return nil, err
 	}

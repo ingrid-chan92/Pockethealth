@@ -24,7 +24,7 @@ func QueryHeaderAttribute(db persistence.Database, w http.ResponseWriter, r *htt
 	tagValue := r.URL.Query().Get("tag")
 
 	// error handling: Tag must follow a specific format
-	tagInfo, err := parseTagInfo(tagValue)
+	tagInfo, err := ParseTagInfo(tagValue)
 	if err != nil {
 		fmt.Printf("error parsing tags %s: %s\n", tagInfo, err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -44,7 +44,7 @@ func QueryHeaderAttribute(db persistence.Database, w http.ResponseWriter, r *htt
 	}
 
 	// Given valid tag and existing file, retrieve the header attribute element
-	data, err := dicom.ParseFile(metadata.FileLocation, nil)
+	data, err := dicom.ParseFile(metadata.FilePath, nil)
 	if err != nil {
 		fmt.Printf("Error parsing dicom file for id %s: %v\n", fileId, err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -67,7 +67,7 @@ func QueryHeaderAttribute(db persistence.Database, w http.ResponseWriter, r *htt
 	w.Write(response)
 }
 
-func parseTagInfo(tagParam string) (*tag.Info, error) {
+func ParseTagInfo(tagParam string) (*tag.Info, error) {
 	// validate format of the string: (XXXX, YYYY), where X/Y are Hexadecimal numbers
 	if tagParam == "" {
 		return nil, fmt.Errorf("tag cannot be empty")
