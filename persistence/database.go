@@ -9,10 +9,14 @@ import (
 
 const MetadataDatabaseLocation = "persistence/dicommetadata.db"
 
+// For simplicity, only one user Id exists in this system
+const UserId = 1
+
 type Database interface {
 	Connect() error
 	Disconnect()
 	GetMetadata(id string) (*model.Metadata, error)
+	CreateMetadata(id string, filepath string) error
 }
 
 type dbImpl struct {
@@ -41,10 +45,18 @@ func (d *dbImpl) Disconnect() {
 func (d *dbImpl) GetMetadata(id string) (*model.Metadata, error) {
 	var result model.Metadata
 
-	row := d.db.QueryRow("SELECT id, userId, fileLocation FROM fileMetadata wHERE id = $1", id)
-	err := row.Scan(&result.Id, &result.UserId, &result.FileLocation)
+	row := d.db.QueryRow("SELECT id, filepath, userId FROM metadata WHERE id = $1", id)
+	err := row.Scan(&result.Id, &result.FileLocation, &result.UserId)
 	if err != nil {
 		return nil, err
 	}
 	return &result, nil
+}
+
+func (d *dbImpl) CreateMetadata(id string, filepath string) error {
+	_, err := d.db.Exec("INSERT INTO metadata (id, filepath, userId) VALUES (?, ?, ?);", id, filepath, UserId)
+	if err != nil {
+		return err
+	}
+	return nil
 }

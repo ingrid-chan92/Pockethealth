@@ -42,3 +42,11 @@ func (router *Router) UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 	handlers.UploadFile(router.db, w, r)
 }
+
+func (router *Router) GetMetadata(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	handlers.GetMetadata(router.db, w, r)
+}

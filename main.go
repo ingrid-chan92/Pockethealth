@@ -16,6 +16,7 @@ func main() {
 
 	http.HandleFunc("/{id}/headerAttribute", router.QueryHeaderAttribute)
 	http.HandleFunc("/{id}/image", router.GetImage)
+	http.HandleFunc("/{id}", router.GetMetadata)
 	http.HandleFunc("/", router.UploadFile)
 
 	err := http.ListenAndServe(":3333", nil)

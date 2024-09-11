@@ -14,12 +14,13 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 
 	// error handling: File Id must exist
 	metadata, err := db.GetMetadata(fileId)
-	if metadata == nil {
-		w.WriteHeader(http.StatusNotFound)
+	if err != nil {
+		fmt.Printf("Error retrieving metadata for id %s: %s", fileId, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+	if metadata == nil {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
