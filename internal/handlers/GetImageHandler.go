@@ -36,7 +36,7 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 	}
 	pixelDataElement, err := data.FindElementByTag(tag.PixelData)
 	if err != nil {
-		fmt.Printf("Could not find Pixel Data Tag in file %s: %s", fileId, err)
+		fmt.Printf("Could not find Pixel Data Tag in file %s: %s\n", fileId, err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

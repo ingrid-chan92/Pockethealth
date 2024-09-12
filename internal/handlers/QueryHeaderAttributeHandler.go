@@ -52,7 +52,7 @@ func QueryHeaderAttribute(db persistence.Database, w http.ResponseWriter, r *htt
 	}
 	element, err := data.FindElementByTag(tagInfo.Tag)
 	if err != nil {
-		fmt.Printf("Could not find tag %s in file %s: %s", tagInfo.Name, fileId, err)
+		fmt.Printf("Could not find tag %s in file %s: %s\n", tagInfo.Name, fileId, err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
