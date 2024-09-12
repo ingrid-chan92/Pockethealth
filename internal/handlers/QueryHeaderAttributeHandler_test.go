@@ -34,7 +34,6 @@ func TestParseTagInfo_emptyTag(t *testing.T) {
 	assert.Contains(t, err.Error(), "tag cannot be empty")
 	assert.Nil(t, tagInfo)
 }
-
 func TestParseTagInfo_invalidFormat(t *testing.T) {
 	tagInfo, err := handlers.ParseTagInfo("abcdefghi")
 	assert.Error(t, err)
@@ -42,6 +41,12 @@ func TestParseTagInfo_invalidFormat(t *testing.T) {
 	assert.Nil(t, tagInfo)
 }
 
+func TestParseTagInfo_almostMatch(t *testing.T) {
+	tagInfo, err := handlers.ParseTagInfo("abc(0002,0002)abc")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "tag is not formatted correctly")
+	assert.Nil(t, tagInfo)
+}
 func TestParseTagInfo_unknownTag(t *testing.T) {
 	tagInfo, err := handlers.ParseTagInfo("(FFFF,FFFF)")
 	assert.Error(t, err)

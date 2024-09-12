@@ -72,7 +72,7 @@ func ParseTagInfo(tagParam string) (*tag.Info, error) {
 	if tagParam == "" {
 		return nil, fmt.Errorf("tag cannot be empty")
 	}
-	match, _ := regexp.MatchString("\\([0-9a-fA-F]{4},[0-9a-fA-F]{4}\\)", tagParam)
+	match, _ := regexp.MatchString("^\\([0-9a-fA-F]{4},[0-9a-fA-F]{4}\\)$", tagParam)
 	if !match {
 		return nil, fmt.Errorf("tag is not formatted correctly")
 	}
