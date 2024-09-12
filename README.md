@@ -2,6 +2,16 @@
 
 This microservice is used for uploading DICOM Files. These files can then be parsed and processed to retrieve the image data and header attributes elements.
 
+# Execution
+
+To run the service:
+
+```
+go run main.go
+```
+
+Service will be available on http://localhost:3333
+
 # API Endpoints
 
 ## Upload DICOM File
