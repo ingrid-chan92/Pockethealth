@@ -26,7 +26,7 @@ func QueryHeaderAttribute(db persistence.Database, w http.ResponseWriter, r *htt
 	// error handling: Tag must follow a specific format
 	tagInfo, err := ParseTagInfo(tagValue)
 	if err != nil {
-		fmt.Printf("error parsing tags %s: %s\n", tagInfo, err)
+		fmt.Printf("error parsing tags %s: %s\n", tagValue, err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
