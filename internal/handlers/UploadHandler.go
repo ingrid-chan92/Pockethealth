@@ -20,7 +20,12 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 	id := uuid.New().String()
 
 	// Extract source file from the request
-	r.ParseMultipartForm(32 << 20)
+	err := r.ParseMultipartForm(32 << 20)
+	if err != nil {
+		fmt.Printf("Error parsing dicom file: %s\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	source, header, err := r.FormFile("dicom")
 	if err != nil {
 		fmt.Printf("Error retrieving file: %s\n", err)
@@ -37,7 +42,12 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 	// Move cursor back to start of file
-	source.Seek(0, io.SeekStart)
+	_, err = source.Seek(0, io.SeekStart)
+	if err != nil {
+		fmt.Printf("Error reading dicom file: %s\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// Create destination file
 	filepath := fmt.Sprintf("%s/%s", StoragePath, id)
@@ -66,5 +76,10 @@ func UploadFile(db persistence.Database, w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	w.Write([]byte(id))
+	_, err = w.Write([]byte(id))
+	if err != nil {
+		fmt.Printf("Error writing response for file %s: %s\n", id, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

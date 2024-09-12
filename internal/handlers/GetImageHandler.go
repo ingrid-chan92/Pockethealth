@@ -51,5 +51,10 @@ func GetImage(db persistence.Database, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(buffer.Bytes())
+	_, err = w.Write(buffer.Bytes())
+	if err != nil {
+		fmt.Printf("Error writing response for file %s: %s\n", fileId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

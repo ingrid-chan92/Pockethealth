@@ -27,5 +27,10 @@ func GetMetadata(db persistence.Database, w http.ResponseWriter, r *http.Request
 
 	// convert to json
 	response, _ := json.Marshal(metadata)
-	w.Write(response)
+	_, err = w.Write(response)
+	if err != nil {
+		fmt.Printf("Error writing response for file %s: %s\n", fileId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

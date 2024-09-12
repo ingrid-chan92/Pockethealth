@@ -64,7 +64,12 @@ func QueryHeaderAttribute(db persistence.Database, w http.ResponseWriter, r *htt
 	response, _ := json.Marshal(rawResponse)
 
 	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+	_, err = w.Write(response)
+	if err != nil {
+		fmt.Printf("Error writing response for file %s: %s\n", fileId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func ParseTagInfo(tagParam string) (*tag.Info, error) {
